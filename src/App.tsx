@@ -1,12 +1,12 @@
 import { Navbar } from "./components/Navbar";
-import { WalletGenerator } from "./components/WalletGenerator";
+import DeterministicMnemonicGenerator from "./components/WalletGenerator0";
 
 function App() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <WalletGenerator />
+        <DeterministicMnemonicGenerator />
       </main>
     </div>
   );
