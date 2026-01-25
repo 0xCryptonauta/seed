@@ -69,10 +69,10 @@ export default function WalletGenerator(): JSX.Element {
     <div className="max-w-2xl mx-auto w-full">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">
+          <CardTitle className="text-xl font-semibold text-center py-1">
             Wallet Generator
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-center">
             Generate deterministic wallet keys from your secret passphrase
           </CardDescription>
         </CardHeader>
