@@ -1,0 +1,27 @@
+{
+  "name": "Seed - Mnemonic",
+  "short_name": "Seed",
+  "description": "Seed Mnemonic Generator for crypto wallets",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/seedIB_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/seedIB_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "scope": "/",
+  "orientation": "portrait",
+  "prefer_related_applications": false,
+  "related_applications": []
+}
