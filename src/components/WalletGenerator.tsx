@@ -20,6 +20,7 @@ export default function WalletGenerator(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
   const [acknowledged, setAcknowledged] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [walletGenerated, setWalletGenerated] = useState<boolean>(false);
 
   const handleGenerate = async () => {
     if (!passphrase.trim()) {
@@ -37,6 +38,7 @@ export default function WalletGenerator(): JSX.Element {
     try {
       const derived = await deriveFromPassphrase(passphrase);
       setResult(derived);
+      setWalletGenerated(true);
     } catch (err) {
       console.error("Derivation failed", err);
       setError("Failed to generate wallet. Please try again.");
@@ -86,7 +88,13 @@ export default function WalletGenerator(): JSX.Element {
             <textarea
               id="passphrase"
               value={passphrase}
-              onChange={(e) => setPassphrase(e.target.value)}
+              onChange={(e) => {
+                setPassphrase(e.target.value);
+                if (walletGenerated) {
+                  handleReset();
+                  setWalletGenerated(false);
+                }
+              }}
               placeholder="Enter your secret passphrase"
               className={cn(
                 "flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 items-center justify-center text-center",
