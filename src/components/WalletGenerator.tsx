@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import StrengthMeter from "@/components/StrengthMeter";
+import { useToast } from "@/components/ui/toast";
 
 export default function WalletGenerator(): JSX.Element {
   const [passphrase, setPassphrase] = useState<string>("");
@@ -55,15 +56,59 @@ export default function WalletGenerator(): JSX.Element {
     setError(null);
   };
 
-  const handleCopyToClipboard = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        // Copy successful
-      })
-      .catch((err) => {
-        console.error("Failed to copy: ", err);
-      });
+  const { showToast } = useToast();
+
+  const handleCopyToClipboard = (
+    text: string,
+    type: "mnemonic" | "privateKey",
+  ) => {
+    console.log("Copy function called with:", text, type);
+
+    // Fallback for mobile browsers that don't support navigator.clipboard
+    const copyFallback = () => {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed"; // Avoid scrolling to bottom
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      try {
+        const success = document.execCommand("copy");
+        console.log("Fallback copy:", success ? "success" : "failed");
+        if (success) {
+          const itemName =
+            type === "mnemonic" ? "Mnemonic phrase" : "Private key";
+          showToast(`${itemName} copied to clipboard!`, "success");
+        } else {
+          showToast("Failed to copy to clipboard", "error");
+        }
+      } catch (err) {
+        console.error("Fallback copy failed:", err);
+        showToast("Failed to copy to clipboard", "error");
+      }
+
+      document.body.removeChild(textarea);
+    };
+
+    // Try modern clipboard API first
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          console.log("Modern clipboard API success");
+          const itemName =
+            type === "mnemonic" ? "Mnemonic phrase" : "Private key";
+          showToast(`${itemName} copied to clipboard!`, "success");
+        })
+        .catch((err) => {
+          console.error("Modern clipboard API failed:", err);
+          // Fall back to execCommand for mobile browsers
+          copyFallback();
+        });
+    } else {
+      // Browser doesn't support clipboard API
+      copyFallback();
+    }
   };
 
   return (
@@ -158,38 +203,42 @@ export default function WalletGenerator(): JSX.Element {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <p className="text-sm text-muted-foreground mb-1 font-medium">
-                Mnemonic Phrase
-              </p>
-              <div className="relative">
-                <div className="break-words rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
-                  {result.mnemonic}
-                </div>
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-sm text-muted-foreground font-medium">
+                  Mnemonic Phrase
+                </p>
                 <button
-                  onClick={() => handleCopyToClipboard(result.mnemonic)}
-                  className="absolute top-3 right-3 text-sm cursor-pointer hover:text-foreground transition-colors"
+                  onClick={() =>
+                    handleCopyToClipboard(result.mnemonic, "mnemonic")
+                  }
+                  className="text-sm cursor-pointer hover:text-foreground transition-colors"
                   title="Copy to clipboard"
                 >
                   📋
                 </button>
               </div>
+              <div className="break-words rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
+                {result.mnemonic}
+              </div>
             </div>
 
             <div>
-              <p className="text-sm text-muted-foreground mb-1 font-medium">
-                Private Key
-              </p>
-              <div className="relative">
-                <div className="break-all rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
-                  {result.privateKeyHex}
-                </div>
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-sm text-muted-foreground font-medium">
+                  Private Key
+                </p>
                 <button
-                  onClick={() => handleCopyToClipboard(result.privateKeyHex)}
-                  className="absolute top-3 right-3 text-sm cursor-pointer hover:text-foreground transition-colors"
+                  onClick={() =>
+                    handleCopyToClipboard(result.privateKeyHex, "privateKey")
+                  }
+                  className="text-sm cursor-pointer hover:text-foreground transition-colors"
                   title="Copy to clipboard"
                 >
                   📋
                 </button>
+              </div>
+              <div className="break-all rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
+                {result.privateKeyHex}
               </div>
             </div>
           </CardContent>
