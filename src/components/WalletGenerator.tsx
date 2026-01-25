@@ -147,11 +147,13 @@ export default function WalletGenerator(): JSX.Element {
       {result && (
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle className="text-lg">Generated Wallet</CardTitle>
+            <CardTitle className="text-lg text-center">
+              Generated Wallet
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">
+              <p className="text-sm text-muted-foreground mb-1 font-medium">
                 Mnemonic Phrase
               </p>
               <div className="relative">
@@ -169,7 +171,9 @@ export default function WalletGenerator(): JSX.Element {
             </div>
 
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Private Key</p>
+              <p className="text-sm text-muted-foreground mb-1 font-medium">
+                Private Key
+              </p>
               <div className="relative">
                 <div className="break-all rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
                   {result.privateKeyHex}
@@ -185,7 +189,7 @@ export default function WalletGenerator(): JSX.Element {
             </div>
           </CardContent>
           <CardFooter>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground text-center">
               ⚠️ Store these securely. Anyone with access to this information
               can control your wallet.
             </p>
