@@ -1,6 +1,57 @@
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+declare global {
+  interface BeforeInstallPromptEvent extends Event {
+    prompt: () => Promise<void>;
+    userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+  }
+}
 
 export default function About() {
+  const [installable, setInstallable] = useState(false);
+  const [installEvent, setInstallEvent] =
+    useState<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
+      e.preventDefault();
+      setInstallable(true);
+      setInstallEvent(e);
+    };
+
+    window.addEventListener(
+      "beforeinstallprompt",
+      handleBeforeInstallPrompt as any,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt as any,
+      );
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installEvent) return;
+
+    try {
+      await installEvent.prompt();
+      const { outcome } = await installEvent.userChoice;
+      if (outcome === "accepted") {
+        console.log("User accepted the install prompt");
+      } else {
+        console.log("User dismissed the install prompt");
+      }
+      setInstallable(false);
+      setInstallEvent(null);
+    } catch (error) {
+      console.error("Installation error:", error);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto w-full">
       <Card className="w-full">
@@ -28,6 +79,7 @@ export default function About() {
               <li>Secure cryptographic algorithms</li>
               <li>Client-side only processing (no data leaves your browser)</li>
               <li>Open source and auditable</li>
+              <li>Progressive Web App - installable and works offline</li>
             </ul>
           </div>
 
@@ -39,6 +91,17 @@ export default function About() {
               <li>This tool is for educational and testing purposes</li>
               <li>Always verify generated addresses before using</li>
             </ul>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2 pt-4">
+            {installable && (
+              <Button
+                onClick={handleInstallClick}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                📱 Install App
+              </Button>
+            )}
           </div>
 
           <p className="text-xs text-muted-foreground">
