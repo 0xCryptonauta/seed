@@ -13,6 +13,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import StrengthMeter from "@/components/StrengthMeter";
 
 export default function WalletGenerator(): JSX.Element {
   const [passphrase, setPassphrase] = useState<string>("");
@@ -96,6 +97,8 @@ export default function WalletGenerator(): JSX.Element {
                 }
               }}
               placeholder="Enter your secret passphrase"
+              autoCorrect="off"
+              spellCheck={false}
               className={cn(
                 "flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 items-center justify-center text-center",
                 error ? "border-destructive" : "",
@@ -103,6 +106,8 @@ export default function WalletGenerator(): JSX.Element {
               disabled={loading}
             />
             {error && <p className="text-sm text-destructive mt-1">{error}</p>}
+
+            <StrengthMeter passphrase={passphrase} />
           </div>
 
           <div className="flex items-start space-x-2">
