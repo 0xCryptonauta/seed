@@ -1,6 +1,4 @@
 import { ThemeToggle } from "./ThemeToggle";
-import { Button } from "./ui/button";
-import { useState, useEffect } from "react";
 
 interface NavbarProps {
   onLogoClick?: () => void;
