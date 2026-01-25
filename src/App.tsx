@@ -1,5 +1,5 @@
 import { Navbar } from "./components/Navbar";
-import DeterministicMnemonicGenerator from "./components/WalletGenerator0";
+import DeterministicMnemonicGenerator from "./components/WalletGenerator";
 
 function App() {
   return (

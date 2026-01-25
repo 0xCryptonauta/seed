@@ -1,73 +1,90 @@
-# React + TypeScript + Vite
+# Deterministic Wallet Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A secure, browser-based cryptographic wallet generator that creates deterministic BIP-39 mnemonics and private keys from user-provided passphrases.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This application allows users to generate cryptographic wallets deterministically from a secret passphrase. The same passphrase will always produce the same mnemonic and private key, making it easy to recover wallets without needing to store seed phrases.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Deterministic Generation**: Same passphrase → same wallet
+- **BIP-39 Compliant**: Uses standard BIP-39 mnemonic generation
+- **Secure Key Derivation**: Uses PBKDF2 with 600,000 iterations for passphrase hardening
+- **Browser-Based**: No server-side processing, all computation happens client-side
+- **Modern Stack**: Built with React 19, TypeScript, Vite, and Tailwind CSS
 
-## Expanding the ESLint configuration
+## Technical Details
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Cryptographic Process
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. **Passphrase Normalization**: Input is normalized using NFKD Unicode normalization
+2. **Key Strengthening**: PBKDF2 with SHA-256, 600,000 iterations
+3. **Key Expansion**: HMAC-based key derivation
+4. **Mnemonic Generation**: BIP-39 entropy-to-mnemonic conversion
+5. **Private Key Extraction**: 32-byte private key in hex format
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Security Considerations
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- All cryptographic operations use audited libraries:
+  - `@noble/hashes` for PBKDF2, HMAC, and SHA-256
+  - `@scure/bip39` for BIP-39 mnemonic generation
+- No sensitive data is transmitted to servers
+- Uses modern cryptographic primitives with appropriate parameters
+
+## Usage
+
+1. Enter a strong, unique passphrase
+2. Check the acknowledgment box
+3. Click "Generate"
+4. Store your generated mnemonic and private key securely
+
+⚠️ **Important**: Anyone with your passphrase can regenerate your wallet. Keep it secret and secure!
+
+## Development
+
+## Project Structure
+
+```
+src/
+├── components/       # React components
+│   ├── WalletGenerator0.tsx  # Main wallet generator component
+│   └── Navbar.tsx     # Navigation component
+├── lib/              # Core logic
+│   └── deriveFromPassphrase.ts  # Cryptographic derivation
+├── App.tsx           # Main application
+└── main.tsx          # Entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Core Cryptographic Libraries
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `@noble/hashes`: Secure cryptographic hash functions
+- `@scure/bip39`: BIP-39 mnemonic generation
+
+### UI Framework
+
+- React 19 with TypeScript
+- Tailwind CSS for styling
+- shadcn/ui components
+
+### Build Tools
+
+- Vite (via rolldown-vite) for fast development
+- ESLint for code quality
+- TypeScript for type safety
+
+## Security Notes
+
+1. **Browser Storage**: This application does not store any sensitive data in browser storage
+2. **Memory Safety**: Generated keys are kept in memory only during the session
+3. **Deterministic Security**: The security of generated wallets depends entirely on the strength of your passphrase
+
+## License
+
+This project is private and not intended for public distribution.
+
+## Disclaimer
+
+This software is provided "as is" without warranty of any kind. Use at your own risk. The authors are not responsible for any loss of funds or data resulting from the use of this software.
