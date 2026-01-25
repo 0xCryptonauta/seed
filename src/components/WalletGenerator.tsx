@@ -55,6 +55,11 @@ export default function WalletGenerator(): JSX.Element {
 
       setResult(derived);
       setWalletGenerated(true);
+
+      // Prevent form resubmission on page reload
+      if (window.history.replaceState) {
+        window.history.replaceState(null, "", window.location.href);
+      }
     } catch (err) {
       console.error("Derivation failed", err);
       setError("Failed to generate wallet. Please try again.");
