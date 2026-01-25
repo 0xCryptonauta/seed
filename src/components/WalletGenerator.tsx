@@ -52,6 +52,17 @@ export default function WalletGenerator(): JSX.Element {
     setError(null);
   };
 
+  const handleCopyToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        // Copy successful
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
+
   return (
     <div className="max-w-2xl mx-auto w-full">
       <Card className="w-full">
@@ -135,15 +146,33 @@ export default function WalletGenerator(): JSX.Element {
               <p className="text-sm text-muted-foreground mb-1">
                 Mnemonic Phrase
               </p>
-              <div className="break-words rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
-                {result.mnemonic}
+              <div className="relative">
+                <div className="break-words rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
+                  {result.mnemonic}
+                </div>
+                <button
+                  onClick={() => handleCopyToClipboard(result.mnemonic)}
+                  className="absolute top-3 right-3 text-sm cursor-pointer hover:text-foreground transition-colors"
+                  title="Copy to clipboard"
+                >
+                  📋
+                </button>
               </div>
             </div>
 
             <div>
               <p className="text-sm text-muted-foreground mb-1">Private Key</p>
-              <div className="break-all rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
-                {result.privateKeyHex}
+              <div className="relative">
+                <div className="break-all rounded-md border border-input bg-muted/50 p-3 text-sm font-mono">
+                  {result.privateKeyHex}
+                </div>
+                <button
+                  onClick={() => handleCopyToClipboard(result.privateKeyHex)}
+                  className="absolute top-3 right-3 text-sm cursor-pointer hover:text-foreground transition-colors"
+                  title="Copy to clipboard"
+                >
+                  📋
+                </button>
               </div>
             </div>
           </CardContent>
