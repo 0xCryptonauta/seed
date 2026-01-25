@@ -6,7 +6,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center h-16 p-6">
           <div>
-            <img src="/vite.svg" alt="Vite" className="w-6 h-6" />
+            <img src="/IB_icon.png" alt="IB Logo" className="w-6 h-6" />
           </div>
           <div>
             <span style={{ fontWeight: "bold", fontSize: "16px" }}>
