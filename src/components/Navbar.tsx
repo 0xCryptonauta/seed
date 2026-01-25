@@ -9,7 +9,9 @@ export function Navbar() {
             <img src="/vite.svg" alt="Vite" className="w-6 h-6" />
           </div>
           <div>
-            <span>Deterministic Mnemonic Generator</span>
+            <span style={{ fontWeight: "bold", fontSize: "16px" }}>
+              Deterministic Mnemonic Generator
+            </span>
           </div>
           <div>
             <ThemeToggle />
