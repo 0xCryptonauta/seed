@@ -1,4 +1,6 @@
 import { ThemeToggle } from "./ThemeToggle";
+import { Button } from "./ui/button";
+import { useState, useEffect } from "react";
 
 interface NavbarProps {
   onLogoClick?: () => void;
@@ -22,7 +24,7 @@ export function Navbar({ onLogoClick }: NavbarProps) {
               Deterministic Mnemonic Generator
             </span>
           </div>
-          <div>
+          <div className="flex items-center space-x-4">
             <ThemeToggle />
           </div>
         </div>
