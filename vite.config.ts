@@ -13,13 +13,22 @@ export default defineConfig({
       manifest: {
         name: "Seed - Mnemonic",
         short_name: "Seed",
-        description: "Seed Mnemonic Generator",
+        description: "Seed Mnemonic Generator for crypto wallets",
         theme_color: "#ffffff",
         background_color: "#ffffff",
         display: "standalone",
         scope: "/",
         start_url: "/",
+        orientation: "portrait",
+        prefer_related_applications: false,
+        related_applications: [],
         icons: [
+          {
+            src: "/seedIB_icon.png",
+            sizes: "144x144",
+            type: "image/png",
+            purpose: "any maskable",
+          },
           {
             src: "/seedIB_icon.png",
             sizes: "192x192",
