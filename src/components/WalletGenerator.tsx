@@ -38,7 +38,21 @@ export default function WalletGenerator(): JSX.Element {
     setLoading(true);
 
     try {
+      // ⬇️ force render
+      await new Promise((r) => setTimeout(r, 0));
+      console.log("Starting wallet derivation...");
+      const startTime = Date.now();
       const derived = await deriveFromPassphrase(passphrase);
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      console.log(`Wallet derivation completed in ${duration}ms`);
+
+      // Ensure minimum loading time for UX (1 second)
+      if (duration < 1000) {
+        console.log(`Derivation was too fast (${duration}ms), adding delay...`);
+        await new Promise((resolve) => setTimeout(resolve, 1000 - duration));
+      }
+
       setResult(derived);
       setWalletGenerated(true);
     } catch (err) {
@@ -62,8 +76,6 @@ export default function WalletGenerator(): JSX.Element {
     text: string,
     type: "mnemonic" | "privateKey",
   ) => {
-    console.log("Copy function called with:", text, type);
-
     // Fallback for mobile browsers that don't support navigator.clipboard
     const copyFallback = () => {
       const textarea = document.createElement("textarea");
@@ -74,7 +86,6 @@ export default function WalletGenerator(): JSX.Element {
 
       try {
         const success = document.execCommand("copy");
-        console.log("Fallback copy:", success ? "success" : "failed");
         if (success) {
           const itemName =
             type === "mnemonic" ? "Mnemonic phrase" : "Private key";
@@ -95,13 +106,12 @@ export default function WalletGenerator(): JSX.Element {
       navigator.clipboard
         .writeText(text)
         .then(() => {
-          console.log("Modern clipboard API success");
           const itemName =
             type === "mnemonic" ? "Mnemonic phrase" : "Private key";
           showToast(`${itemName} copied to clipboard!`, "success");
         })
         .catch((err) => {
-          console.error("Modern clipboard API failed:", err);
+          console.error("Failed to copy: ", err);
           // Fall back to execCommand for mobile browsers
           copyFallback();
         });
@@ -189,7 +199,31 @@ export default function WalletGenerator(): JSX.Element {
             disabled={loading || !passphrase.trim() || !acknowledged}
             className="min-w-[120px] cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
           >
-            {loading ? "Generating..." : "Generate Wallet"}
+            {loading ? (
+              <>
+                <span className="animate-spin inline-block">
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+                      fill="currentColor"
+                      opacity="0.2"
+                    />
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12H4C4 7.59 7.59 4 12 4V2Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                Generating...
+              </>
+            ) : (
+              "Generate Wallet"
+            )}
           </Button>
         </CardFooter>
       </Card>
