@@ -2,7 +2,6 @@ const CACHE_NAME = "seed-mnemonic-v1";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
-  "/manifest.json",
   "/IB_icon.png",
   "/seedIB_icon.png",
   "/src/main.tsx",
