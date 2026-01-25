@@ -2,7 +2,7 @@
   "name": "Seed - Mnemonic",
   "short_name": "Seed",
   "description": "Seed Mnemonic Generator for crypto wallets",
-  "start_url": "/",
+  "start_url": "https://seed.inbytes.xyz",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
