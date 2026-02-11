@@ -1,4 +1,4 @@
-import { useState, useEffect, type JSX } from "react";
+import { useState, useEffect, useCallback, type JSX } from "react";
 import { cn } from "@/lib/utils";
 
 interface ToastProps {
@@ -14,13 +14,17 @@ export function Toast({
   duration = 3000,
   onClose,
 }: ToastProps): JSX.Element {
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
+      handleClose();
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [duration, onClose]);
+  }, [duration, handleClose]);
 
   const getToastStyles = () => {
     switch (type) {

@@ -2,12 +2,20 @@
 
 import { useState, useEffect } from "react";
 
+const THEME_STORAGE_KEY = "theme:v1";
+
 export function ThemeToggle() {
   const [theme, setTheme] = useState<string | null>(null);
 
   useEffect(() => {
     // Check for saved theme preference or use system preference
-    const savedTheme = localStorage.getItem("theme");
+    let savedTheme: string | null = null;
+    try {
+      savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    } catch {
+      // localStorage may throw in incognito/private browsing
+    }
+
     const systemPrefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)",
     ).matches;
@@ -33,7 +41,11 @@ export function ThemeToggle() {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
-    localStorage.setItem("theme", newTheme);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    } catch {
+      // localStorage may throw in incognito/private browsing
+    }
 
     // Update meta theme-color based on theme
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');

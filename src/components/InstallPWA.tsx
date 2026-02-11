@@ -1,15 +1,24 @@
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 
+interface BeforeInstallPromptEvent extends Event {
+  readonly userChoice: Promise<{
+    outcome: "accepted" | "dismissed";
+    platform: string;
+  }>;
+  prompt(): void;
+}
+
 export const InstallPWA = () => {
   const [showInstallButton, setShowInstallButton] = useState<boolean>(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [installationError, setInstallationError] = useState<string | null>(
     null,
   );
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e: Event) => {
+    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallButton(true);
@@ -49,7 +58,7 @@ export const InstallPWA = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       deferredPrompt.userChoice
-        .then((choiceResult: any) => {
+        .then((choiceResult: { outcome: "accepted" | "dismissed"; platform: string }) => {
           if (choiceResult.outcome === "accepted") {
             console.log("User accepted the install prompt");
           } else {
@@ -58,7 +67,7 @@ export const InstallPWA = () => {
           setDeferredPrompt(null);
           setShowInstallButton(false);
         })
-        .catch((error: any) => {
+        .catch((error: unknown) => {
           console.error("Installation error:", error);
           setInstallationError("Failed to install PWA");
         });
