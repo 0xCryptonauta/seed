@@ -12,14 +12,20 @@ export function ThemeToggle() {
       "(prefers-color-scheme: dark)",
     ).matches;
 
+    let initialTheme: string;
     if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      initialTheme = savedTheme;
     } else {
       // Use system preference by default
-      const initialTheme = systemPrefersDark ? "dark" : "light";
-      setTheme(initialTheme);
-      document.documentElement.classList.toggle("dark", systemPrefersDark);
+      initialTheme = systemPrefersDark ? "dark" : "light";
+    }
+    setTheme(initialTheme);
+    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+
+    // Update meta theme-color based on theme
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", initialTheme === "dark" ? "#0f172a" : "#ffffff");
     }
   }, []);
 
@@ -28,6 +34,12 @@ export function ThemeToggle() {
     setTheme(newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
     localStorage.setItem("theme", newTheme);
+
+    // Update meta theme-color based on theme
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", newTheme === "dark" ? "#0f172a" : "#ffffff");
+    }
   };
 
   return (
