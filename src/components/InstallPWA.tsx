@@ -18,9 +18,10 @@ export const InstallPWA = () => {
   );
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
+    const handleBeforeInstallPrompt = (e: Event) => {
+      const event = e as BeforeInstallPromptEvent;
+      event.preventDefault();
+      setDeferredPrompt(event);
       setShowInstallButton(true);
       console.log("PWA install prompt available");
     };
@@ -34,6 +35,7 @@ export const InstallPWA = () => {
         window.addEventListener(
           "beforeinstallprompt",
           handleBeforeInstallPrompt,
+          { once: true },
         );
       }
     };
